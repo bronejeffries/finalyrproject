@@ -1,4 +1,4 @@
-from flask import flash, abort, render_template, jsonify
+from flask import flash, abort, url_for, redirect, render_template, jsonify
 from flask_login import current_user, login_required
 from .forms import LoginForm, AddPoliceStationForm, RegistrationForm
 from ..model import Police, User, Category, CrimeScene
@@ -47,6 +47,35 @@ def police_station_data():
                            title="PoliceStation",
                            police_stations=police_stations,
                            form=form)
+
+
+@home.route('/admin/policestation/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_police(id):
+    add_police = False
+    police = Police.query.get_or_404(id)
+    form = AddPoliceStationForm(obj=police)
+    if form.validate_on_submit():
+        police.StationName = form.StationName.data
+        division = form.division.data
+        db.session.commit()
+        flash('You have successfully edited a police station')
+        return redirect(url_for('home.police_station_data'))
+    police_stations = Police.query.all()
+    return render_template('home/police_index.html',
+                           title="PoliceStation",
+                           police_stations=police_stations,
+                           form=form)
+
+
+@home.route('/admin/policestation/delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def delete_police(id):
+    police = Police.query.get_or_404(id)
+    db.session.delete(police)
+    db.session.commit()
+    flash('You have successfully deleted the Police Station.')
+    return redirect(url_for('home.police_station_data'))
 
 
 @home.route('/admin/register_user', methods=['GET', 'POST'])
@@ -126,7 +155,7 @@ def get_categories_data():
     category_datasets = []
     plot_dataset = []
     for category in Category.query.all():
-        dataset = {'data': {}, 'label': '','borderColor':''}
+        dataset = {'data': {}, 'label': '', 'borderColor': ''}
         dataset['label'] = category.violet_type
         dataset['borderColor'] = category.category_color
         category_crimes = category.crimescene
@@ -136,12 +165,14 @@ def get_categories_data():
         # map crimes count to years
         years_data = {}
         for category_crime in category_crimes:
-            year_of_analysis = dt.strftime(category_crime.date_posted,date_mask)
-            years_data[year_of_analysis] = years_data[year_of_analysis]+1 if year_of_analysis in years_data.keys() else 1
+            year_of_analysis = dt.strftime(
+                category_crime.date_posted, date_mask)
+            years_data[year_of_analysis] = years_data[year_of_analysis] + \
+                1 if year_of_analysis in years_data.keys() else 1
         dataset['data'] = years_data
         category_datasets.append(dataset)
 
-    #create labels
+    # create labels
     for dataset in category_datasets:
         for year in dataset['data'].keys():
             if year not in labels:
@@ -159,9 +190,9 @@ def get_categories_data():
                 count = 0
             finally:
                 data.append(count)
-        plot_dataset.append({'data':data,
-                             'label':label,
+        plot_dataset.append({'data': data,
+                             'label': label,
                              'borderColor': borderColor
-                            }
-                           )
-    return jsonify({'data':plot_dataset,'labels':labels})
+                             }
+                            )
+    return jsonify({'data': plot_dataset, 'labels': labels})

@@ -2,42 +2,43 @@
 {% import "bootstrap/utils.html" as utils %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block content %}
-    {% include '/partials/topnav.html' %}
-    {% include '/partials/mobiletop.html' %}
-    {% include '/partials/navbar.html' %}
+{% include '/partials/topnav.html' %}
+{% include '/partials/mobiletop.html' %}
+{% include '/partials/navbar.html' %}
 
-    <div class="container" style="min-height:80vh;">
-        <div class="row">
-        <div class="col-lg-12">
-        <div class="content-section">
-            <br/>
-            {{ utils.flashed_messages() }}
-            <br/>
-            <div class="center">
-              <h1>Register Crime Category eg "Theft"</h1>
-              <hr/>
-              {{ wtf.quick_form(form) }}
-            </div>
-          </div>
-          </div>
-          </div>
-
-          <table class="table table-bordered" style="margin-top:100px;">
-                <th>#</th>
-                <th>Category Name</th>
-                <th>Number of Crimes</th>
-                <th>Action</th>
-            
-            <tbody>
-                {% for category in categories %}
-                  <tr>
-                      <td>{{ category.id }}</td>
-                      <td>{{ category.violet_type }}</td>
-                      <td>67</td>
-                      <td>Edit|Delete</td>
-                  </tr>
-                  {% endfor %}
-            </tbody>
-          </table>
+<div class="container" style="min-height:80vh;">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="content-section">
+        <br />
+        {{ utils.flashed_messages() }}
+        <br />
+        <div class="center">
+          <h1>Register Crime Category eg "Theft"</h1>
+          <hr />
+          {{ wtf.quick_form(form) }}
+        </div>
+      </div>
     </div>
+  </div>
+
+  <table class="table table-bordered" style="margin-top:100px;">
+    <th>#</th>
+    <th>Category Name</th>
+    <th>Number of Crimes</th>
+    <th>Action</th>
+
+    <tbody>
+      {% for category in categories %}
+      <tr>
+        <td>{{ category.id }}</td>
+        <td>{{ category.violet_type }}</td>
+        <td>67</td>
+        <td><a href="{{ url_for('crimes.edit_crime', id=category.id)}}">Edit</a>|<a
+            href="{{ url_for('crimes.delete_crime', id=category.id)}}">Delete</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock %}

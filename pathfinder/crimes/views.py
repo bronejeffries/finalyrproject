@@ -64,6 +64,38 @@ def crimeCategory():
                            form=form)
 
 
+@crimes.route('/admin/crime-category/edit/<int:id>', methods=['POST', 'GET'])
+@login_required
+def edit_crime(id):
+    add_crime = False
+    crime = Category.query.get_or_404(id)
+    form = CrimeCategory(obj=crime)
+    if form.validate_on_submit():
+        crime.violet_type = form.violet_type.data
+        db.session.commit()
+        flash('You have successfully edited the Crime Category.')
+
+        # redirect to the departments page
+        return redirect(url_for('crimes.crimeCategory'))
+    categories = Category.query.all()
+    return render_template('crimes/category_index.html',
+                           title="Crime Category",
+                           categories=categories, action="Add",
+                           form=form)
+
+
+@crimes.route('/admin/crime-category/delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def delete_crime(id):
+    crime = Category.query.get_or_404(id)
+    db.session.delete(crime)
+    db.session.commit()
+    flash('You have successfully deleted the Crime Category.')
+
+    # redirect to the departments page
+    return redirect(url_for('crimes.crimeCategory'))
+
+
 @crimes.route('/admin/add-crime', methods=['POST', 'GET'])
 # @login_required
 def addCrime():
