@@ -178,6 +178,9 @@ def get_categories_data():
             if year not in labels:
                 labels.append(year)
 
+    # sort labels(ascending order)
+    labels.sort()
+
     # build the plot dataset
     for dataset in category_datasets:
         label = dataset['label']
