@@ -107,11 +107,12 @@ def collect_data():
     # datemask = '%m/%d/%Y'
     # today = datetime.datetime.strftime(datetime.datetime.today(),datemask)
     # today_cases = CaseFile.query.filter_by(date_posted = today)
-
-    labels, actual_data = category_crimes_data()
+    year = dt.strftime(dt.today(), '%Y')
+    labels, actual_data = category_crimes_data_of_year(year)
     crimesdata = {
         'labels': labels,
-        'data': actual_data
+        'data': actual_data,
+        'year': year
     }
     print('request made.............\n ')
     return jsonify({'crimesdata': crimesdata})
@@ -133,12 +134,21 @@ def collect_summary_data():
     """
 
 
-def category_crimes_data():
+def category_crimes_data_of_year(year):
     crime_categories = []
     crime_categories_count = []
     for category in Category.query.all():
         crime_categories.append(category.violet_type)
-        crime_categories_count.append(len(category.crimescene))
+        #
+        count = 0
+        for crimescene in category.crimescene:
+            """
+            get crimes of the current year
+            """
+            crimescene_year = dt.strftime(crimescene.date_posted, '%Y')
+            if crimescene_year==year:
+                count = count + 1
+        crime_categories_count.append(count)
     return crime_categories, crime_categories_count
 
 

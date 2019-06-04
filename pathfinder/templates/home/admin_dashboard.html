@@ -7,6 +7,7 @@
   var actual_data = []
   var labels = []
   var casesData = {}
+  var current_year = ""
 
 // retrieve graph data
   $.ajax({
@@ -16,6 +17,11 @@
       crimesdata = data.crimesdata
       labels = crimesdata.labels
       actual_data = crimesdata.data
+      current_year = crimesdata.year
+      year_holders = document.getElementsByClassName("current_year")
+      for(var i =0;i<year_holders.length;i++){
+          year_holders[i].innerHTML=current_year
+      }
       setChart()
     },
     error:function(error) {
@@ -147,7 +153,7 @@ $.ajax({
                     <div class="sale-statistic-inner notika-shadow mg-tb-30">
                         <div class="curved-inner-pro">
                             <div class="curved-ctn">
-                                <h2>Daily Crime Statistics</h2>
+                                <h2>Crime Statistics for this year (<span class="current_year"></span>)</h2>
                                 <p></p>
                             </div>
                         </div>
@@ -168,7 +174,7 @@ $.ajax({
                         <div class="sale-statistic-inner notika-shadow mg-tb-30">
                             <div class="curved-inner-pro">
                                 <div class="curved-ctn">
-                                    <h2>Map Crime Statistics</h2>
+                                    <h2>Map Crime Statistics for this year (<span class="current_year"></span>)</h2>
                                     <p></p>
                                 </div>
                             </div>
