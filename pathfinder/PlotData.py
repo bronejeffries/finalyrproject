@@ -10,10 +10,16 @@ from bokeh.models import (
 from bokeh.models.mappers import ColorMapper, LinearColorMapper
 from bokeh.palettes import Viridis5
 import os
+from datetime import datetime as dt
 
 
 def get_co_ordinates():
-    crimes_scenes = CrimeScene.query.all()
+    crimes_scenes = []
+    year_mask = '%Y'
+    year = dt.strftime(dt.today(), year_mask)
+    for crime_scene in CrimeScene.query.all():
+        if dt.strftime(crime_scene.date_posted, year_mask) == year:
+            crimes_scenes.append(crime_scene)
     longitudes = [crimescene.longitude for crimescene in crimes_scenes]
     latitudes = [crimescene.latitude for crimescene in crimes_scenes]
     colors = [crimescene.scene.category_color for crimescene in crimes_scenes]

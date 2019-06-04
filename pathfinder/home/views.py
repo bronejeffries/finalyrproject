@@ -107,11 +107,13 @@ def collect_data():
     # datemask = '%m/%d/%Y'
     # today = datetime.datetime.strftime(datetime.datetime.today(),datemask)
     # today_cases = CaseFile.query.filter_by(date_posted = today)
-
-    labels, actual_data = category_crimes_data()
+    year = dt.strftime(dt.today(), '%Y')
+    labels, actual_data,category_colors = category_crimes_data_of_year(year)
     crimesdata = {
         'labels': labels,
-        'data': actual_data
+        'data': actual_data,
+        'year': year,
+        'category_colors':category_colors
     }
     print('request made.............\n ')
     return jsonify({'crimesdata': crimesdata})
@@ -133,13 +135,24 @@ def collect_summary_data():
     """
 
 
-def category_crimes_data():
+def category_crimes_data_of_year(year):
     crime_categories = []
     crime_categories_count = []
+    cat_colors = []
     for category in Category.query.all():
         crime_categories.append(category.violet_type)
-        crime_categories_count.append(len(category.crimescene))
-    return crime_categories, crime_categories_count
+        cat_colors.append(category.category_color)
+        #
+        count = 0
+        for crimescene in category.crimescene:
+            """
+            get crimes of the current year
+            """
+            crimescene_year = dt.strftime(crimescene.date_posted, '%Y')
+            if crimescene_year==year:
+                count = count + 1
+        crime_categories_count.append(count)
+    return crime_categories, crime_categories_count,cat_colors
 
 
 @home.route('/admin/dashboard/crimes/comp_vis/', methods=['GET', 'POST'])
@@ -177,6 +190,9 @@ def get_categories_data():
         for year in dataset['data'].keys():
             if year not in labels:
                 labels.append(year)
+
+    # sort labels(ascending order)
+    labels.sort()
 
     # build the plot dataset
     for dataset in category_datasets:
