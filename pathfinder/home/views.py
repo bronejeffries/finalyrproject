@@ -108,11 +108,12 @@ def collect_data():
     # today = datetime.datetime.strftime(datetime.datetime.today(),datemask)
     # today_cases = CaseFile.query.filter_by(date_posted = today)
     year = dt.strftime(dt.today(), '%Y')
-    labels, actual_data = category_crimes_data_of_year(year)
+    labels, actual_data,category_colors = category_crimes_data_of_year(year)
     crimesdata = {
         'labels': labels,
         'data': actual_data,
-        'year': year
+        'year': year,
+        'category_colors':category_colors
     }
     print('request made.............\n ')
     return jsonify({'crimesdata': crimesdata})
@@ -137,8 +138,10 @@ def collect_summary_data():
 def category_crimes_data_of_year(year):
     crime_categories = []
     crime_categories_count = []
+    cat_colors = []
     for category in Category.query.all():
         crime_categories.append(category.violet_type)
+        cat_colors.append(category.category_color)
         #
         count = 0
         for crimescene in category.crimescene:
@@ -149,7 +152,7 @@ def category_crimes_data_of_year(year):
             if crimescene_year==year:
                 count = count + 1
         crime_categories_count.append(count)
-    return crime_categories, crime_categories_count
+    return crime_categories, crime_categories_count,cat_colors
 
 
 @home.route('/admin/dashboard/crimes/comp_vis/', methods=['GET', 'POST'])

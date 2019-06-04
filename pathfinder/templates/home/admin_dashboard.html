@@ -8,6 +8,7 @@
   var labels = []
   var casesData = {}
   var current_year = ""
+  var category_colors =[]
 
 // retrieve graph data
   $.ajax({
@@ -18,10 +19,22 @@
       labels = crimesdata.labels
       actual_data = crimesdata.data
       current_year = crimesdata.year
+      category_colors = crimesdata.category_colors
       year_holders = document.getElementsByClassName("current_year")
       for(var i =0;i<year_holders.length;i++){
           year_holders[i].innerHTML=current_year
       }
+      for(var i = 0;i<labels.length;i++){
+      div_spanHolder = document.createElement('div')
+      span_color_holder = document.createElement("span")
+      span_color_holder.innerHTML = "====="
+      span_color_holder.style.color = category_colors[i]
+      span_category_name = document.createElement('span')
+      span_category_name.innerHTML = labels[i]
+      document.getElementById("map_keys").appendChild(span_color_holder)
+      document.getElementById("map_keys").appendChild(span_category_name)
+      }
+
       setChart()
     },
     error:function(error) {
@@ -63,22 +76,8 @@ $.ajax({
           labels: labels,
           datasets: [{
               data: actual_data,
-              backgroundColor: [
-                  'rgba(255, 99, 132, 0.2)',
-                  'rgba(54, 162, 235, 0.2)',
-                  'rgba(255, 206, 86, 0.2)',
-                  'rgba(75, 192, 192, 0.2)',
-                  'rgba(153, 102, 255, 0.2)',
-                  'rgba(255, 159, 64, 0.2)'
-              ],
-              borderColor: [
-                  'rgba(255,99,132,1)',
-                  'rgba(54, 162, 235, 1)',
-                  'rgba(255, 206, 86, 1)',
-                  'rgba(75, 192, 192, 1)',
-                  'rgba(153, 102, 255, 1)',
-                  'rgba(255, 159, 64, 1)'
-              ],
+              backgroundColor: category_colors,
+              borderColor: category_colors,
               borderWidth: 1
           }]
       },
@@ -175,7 +174,11 @@ $.ajax({
                             <div class="curved-inner-pro">
                                 <div class="curved-ctn">
                                     <h2>Map Crime Statistics for this year (<span class="current_year"></span>)</h2>
-                                    <p></p>
+                                    <p>
+                                    Map Key
+                                    <div id="map_keys">
+                                    </div>
+                                    </p>
                                 </div>
                             </div>
                             <!-- show maps here -->
