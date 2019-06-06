@@ -154,15 +154,13 @@ def category_crimes_data_of_year(year):
         crime_categories_count.append(count)
     return crime_categories, crime_categories_count,cat_colors
 
-
 @home.route('/admin/dashboard/crimes/comp_vis/', methods=['GET', 'POST'])
 def crime_comparision_view():
-    return render_template('home/compare_categories.html', title="Analyze Crime Categories")
+    return render_template('home/compare_categories.html', title="Compare Crime Categories")
 
 
 @home.route('/categories/data/line', methods=['GET'])
 def get_categories_data():
-    print('method called....')
     date_mask = '%Y'
     labels = []
     category_datasets = []
@@ -212,3 +210,8 @@ def get_categories_data():
                              }
                             )
     return jsonify({'data': plot_dataset, 'labels': labels})
+
+
+@home.route('/admin/dashboard/crime/analysis/', methods=['GET', 'POST'])
+def analyze_crimes():
+    return render_template('home/compare_categories.html', title="Analyze Crime Category")
