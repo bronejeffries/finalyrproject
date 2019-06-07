@@ -143,29 +143,30 @@
         </button>
       </div>
       <div class="modal-body mx-3">
-        <div class="md-form mb-5">
-          <select type="text" id="ccategory" name="category" class="form-control validate" required>
-          <option>Thefty</option>
-          <option>Rape</option>
-          <option>Murder</option>
-          </select>
-          <label data-error="wrong" data-success="right" for="ccategory">Category</label>
-        </div>
+        <form action="{{url_for('home.analyze_crimes')}}" method="POST">
+            <div class="md-form mb-5">
+                <select type="text" id="ccategory" name="category" class="form-control validate" required>
+                <option>Thefty</option>
+                <option>Rape</option>
+                <option>Murder</option>
+                </select>
+                <label data-error="wrong" data-success="right" for="ccategory">Category</label>
+            </div>
 
-        <div class="md-form mb-4">
-          <i class="sprefix grey-text"></i>
-          <input type="date" id="From_date" name="from_date" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="From_date">Period(from)</label>
-        </div>
-        <div class="md-form mb-4">
-          <i class="sprefix grey-text"></i>
-          <input type="date" id="To_date" name="to_date" class="form-control validate">
-          <label data-error="wrong" data-success="right" for="To_date">Period(To:)</label>
-        </div>
-
-      </div>
-      <div class="modal-footer d-flex justify-content-center">
-        <button class="btn btn-default">Continue</button>
+            <div class="md-form mb-4">
+                <i class="sprefix grey-text"></i>
+                <input type="date" id="From_date" name="from_date" class="form-control validate">
+                <label data-error="wrong" data-success="right" for="From_date">Period(from)</label>
+                </div>
+            <div class="md-form mb-4">
+                <i class="sprefix grey-text"></i>
+                <input type="date" id="To_date" name="to_date" class="form-control validate">
+                <label data-error="wrong" data-success="right" for="To_date">Period(To:)</label>
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <input type='submit' Value="Continue" class="btn btn-default">
+            </div>
+         </form>
       </div>
     </div>
   </div>

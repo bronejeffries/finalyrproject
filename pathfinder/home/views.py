@@ -1,10 +1,10 @@
-from flask import flash, abort, url_for, redirect, render_template, jsonify
+from flask import request,flash, abort, url_for, redirect, render_template, jsonify
 from flask_login import current_user, login_required
 from .forms import LoginForm, AddPoliceStationForm, RegistrationForm
 from ..model import Police, User, Category, CrimeScene
 from .. import db
 from . import home
-from ..PlotData import showmap
+from ..PlotData import (showmap)
 from datetime import datetime as dt
 
 
@@ -134,7 +134,6 @@ def collect_summary_data():
     list
     """
 
-
 def category_crimes_data_of_year(year):
     crime_categories = []
     crime_categories_count = []
@@ -144,7 +143,7 @@ def category_crimes_data_of_year(year):
         cat_colors.append(category.category_color)
         #
         count = 0
-        for crimescene in category.crimescene:
+        for crimescene in category.crimescene.all():
             """
             get crimes of the current year
             """
@@ -153,6 +152,7 @@ def category_crimes_data_of_year(year):
                 count = count + 1
         crime_categories_count.append(count)
     return crime_categories, crime_categories_count,cat_colors
+
 
 @home.route('/admin/dashboard/crimes/comp_vis/', methods=['GET', 'POST'])
 def crime_comparision_view():
@@ -212,6 +212,48 @@ def get_categories_data():
     return jsonify({'data': plot_dataset, 'labels': labels})
 
 
-@home.route('/admin/dashboard/crime/analysis/', methods=['GET', 'POST'])
+@home.route('/admin/dashboard/crime/analysis/', methods=['POST'])
 def analyze_crimes():
-    return render_template('home/compare_categories.html', title="Analyze Crime Category")
+    """
+    create map showing crime category scenes in a period
+    """
+    category_post = request.form['category']
+    from_period = request.form['from_date']
+    to_period = request.form['to_date'] if request.form['to_date'] is not None else dt.today(
+    )
+    print(request.form['to_date'])
+    category = Category.query.filter_by(violet_type=category_post).first()
+    outputname = f"{category_post}_{from_period}_{to_period}"
+    crimescenes = get_crime_scenes_over_period(category,from_period,to_period)
+    showmap(outputname,crimescenes)
+    return render_template('home/categoryanalsis.html',map_name=outputname,category=category_post,from_period=from_period,to_period=to_period, title="Analyze Crime Category")
+
+@home.route('/admin/dashboard/crime/analysis/data',methods=['POST'])
+def analyze_crimes_data():
+    """
+     api for crime data
+    """
+    month_mask = "%B-%Y"
+    """
+    month:count 
+    """
+    graph_dataset = {} 
+    category_post = request.form['category_post']
+    from_period = request.form['from_period']
+    to_period = request.form['to_period'] if request.form['to_period'] is not None else dt.today(
+    )
+    category = Category.query.filter_by(violet_type=category_post).first()
+    # filter scenes in the required period
+    category_scenes = get_crime_scenes_over_period(category,from_period,to_period)
+    # create dataset
+    for crime_scene in category_scenes:
+        dt_posted = crime_scene.date_posted
+        month_year = dt.strftime(dt_posted,month_mask)
+        graph_dataset[month_year] = (graph_dataset[month_year]+1) if month_year in graph_dataset.keys() else 1
+
+    return jsonify({'labels':list(graph_dataset.keys()),'data':list(graph_dataset.values())})   
+
+
+def get_crime_scenes_over_period(category,from_date,to_date):
+    return category.crimescene.filter(CrimeScene.date_posted >= from_date).filter(CrimeScene.date_posted <= to_date).order_by(CrimeScene.date_posted.asc()).all() if category is not None else []
+

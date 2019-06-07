@@ -91,7 +91,7 @@ class Category(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     violet_type = db.Column(db.String(60), nullable=False)
-    crimescene = db.relationship('CrimeScene', backref='scene', lazy=True)
+    crimescene = db.relationship('CrimeScene', backref='scene', lazy='dynamic')
     category_color = db.Column(db.String(60), nullable=False)
 
 

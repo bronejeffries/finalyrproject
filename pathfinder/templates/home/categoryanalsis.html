@@ -1,82 +1,69 @@
 {% extends 'layout.html' %}
 {% block content %}
 <script>
-
-  var endpoint = '/web/PathFinder/v1.0/data/to-day'
-  var endpoint_data = '/web/PathFinder/v1.0/data/'
+ $(document).ready(function(){
+ 
+  var endpoint = '/admin/dashboard/crime/analysis/data'
   var actual_data = []
   var labels = []
-  var casesData = {}
-  var current_year = ""
-  var category_colors =[]
+  var category_colors =[
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)',
+        'rgba(255, 99, 132, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)'
+      ]
+  var borderColor = [
+        'rgba(255,99,132,1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)',
+        'rgba(255,99,132,1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)'
+      ]
+  var category_post = document.getElementById('category').innerHTML
+  var from_period = document.getElementById('from_period').innerHTML
+  var to_period = document.getElementById('to_period').innerHTML
+
 
 // retrieve graph data
-  $.ajax({
-    method:"GET",
-    url: endpoint,
-    success: function (data) {
-      crimesdata = data.crimesdata
-      labels = crimesdata.labels
-      actual_data = crimesdata.data
-      current_year = crimesdata.year
-      category_colors = crimesdata.category_colors
-      year_holders = document.getElementsByClassName("current_year")
-      for(var i =0;i<year_holders.length;i++){
-          year_holders[i].innerHTML=current_year
-      }
-      for(var i = 0;i<labels.length;i++){
-      div_spanHolder = document.createElement('div')
-      span_color_holder = document.createElement("span")
-      span_color_holder.innerHTML = "====="
-      span_color_holder.style.color = category_colors[i]
-      span_category_name = document.createElement('span')
-      span_category_name.innerHTML = labels[i]
-      document.getElementById("map_keys").appendChild(span_color_holder)
-      document.getElementById("map_keys").appendChild(span_category_name)
-      }
-
+  $.post(endpoint,{
+      category_post:category_post,
+      from_period:from_period,
+      to_period:to_period}
+      ).done(function (data) {
+      labels = data.labels
+      actual_data = data.data
       setChart()
-    },
-    error:function(error) {
+    }).fail(function(error) {
       console.error(error);
-    }
-  })
-
-// retrieve cases data
-$.ajax({
-  method:"GET",
-  url:endpoint_data,
-  success: function (data) {
-    casesData = data.casesData
-    setCasesData()
-  },
-  error:function(error){
-    console.error(error);
-  }
-})
-
-  function setCasesData() {
-    $(document).ready(function(){
-      document.getElementById("murder").innerHTML = casesData.murder
-      document.getElementById("kidnap").innerHTML = casesData.kidnap
-      document.getElementById("robbery").innerHTML = casesData.robbery
-      document.getElementById("theft").innerHTML = casesData.thefty
     })
-  }
 
   function setChart(){
-    $(document).ready(function(){
-
-      var ctx = document.getElementById("Daily_chart");
+      var ctx = document.getElementById("period_chart");
       // var ctx2 = document.getElementById("myChart2");
       var myChart = new Chart(ctx, {
       type: 'bar',
       data: {
           labels: labels,
           datasets: [{
+              label: category_post,
               data: actual_data,
               backgroundColor: category_colors,
-              borderColor: category_colors,
+              borderColor: borderColor,
               borderWidth: 1
           }]
       },
@@ -90,10 +77,8 @@ $.ajax({
           }
       }
   });
-
-    })
-
 }
+})
 </script>
     {% include '/partials/topnav.html' %}
     {% include '/partials/mobiletop.html' %}
@@ -117,12 +102,12 @@ $.ajax({
                     <div class="sale-statistic-inner notika-shadow mg-tb-30">
                         <div class="curved-inner-pro">
                             <div class="curved-ctn">
-                                <h2>Crime Statistics for this year (<span class="current_year"></span>)</h2>
+                                <h2>Crime Statistics for <span id="category">{{category}}</span> from (<span id="from_period">{{from_period}}</span>) to (<span id="to_period">{{to_period}}</span>)</h2>
                                 <p></p>
                             </div>
                         </div>
                         <!-- <div id="Daily_chart" class="flot-chart-sts flot-chart"></div> -->
-                        <canvas id="Daily_chart" class="flot-chart-sts flot-chart" width="150" height="95"></canvas>
+                        <canvas id="period_chart" class="flot-chart-sts flot-chart" width="150" height="95"></canvas>
                     </div>
                 </div>
             </div>
@@ -138,16 +123,13 @@ $.ajax({
                         <div class="sale-statistic-inner notika-shadow mg-tb-30">
                             <div class="curved-inner-pro">
                                 <div class="curved-ctn">
-                                    <h2>Map Crime Statistics for this year (<span class="current_year"></span>)</h2>
-                                    <p>
-                                    Map Key
-                                    <div id="map_keys">
-                                    </div>
+                                    <h2>Map Crime Statistics for {{category}}</h2>
+                                    <p>                                   
                                     </p>
                                 </div>
                             </div>
                             <!-- show maps here -->
-                                {% include '/pages/gmap_plot.html' %}
+                                {% include '/pages/'~map_name~'.html' %}
                             <!-- maps here -->
                         </div>
                     </div>
