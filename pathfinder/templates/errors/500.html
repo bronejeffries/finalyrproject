@@ -1,0 +1,21 @@
+<!-- app/templates/errors/404.html -->
+{% extends 'layout.html' %}
+{% import "bootstrap/utils.html" as utils %}
+{% block content %}
+{% include '/partials/topnav.html' %}
+{% include '/partials/mobiletop.html' %}
+{% include '/partials/navbar.html' %}
+<div class="container" style="min-height:80vh;">
+
+  <div style="text-align: center">
+    <h1>Internal Server Error</h1>
+    <h1> 500 Error </h1>
+    <h3> The server encountered an internal error. That's all we know. </h3>
+    <a href="{{ url_for('home.admin_dashboard') }}" class="btn btn-primary btn-lg">
+      <i class="fa fa-home"></i>
+      Dashboard
+    </a>
+
+  </div>
+</div>
+{% endblock %}
