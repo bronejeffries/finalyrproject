@@ -64,44 +64,45 @@
     <!-- main JS
         ============================================ -->
     <script src="/static/js/main.js"></script>
-    <!-- tawk chat JS
-        ============================================ -->
+
 
     <script type="text/javascript">
-        (function() {
-            var fn = function() {
-            Bokeh.safely(function() {
-                (function(root) {
-                function embed_document(root) {
-                    
-               // var docs_json = document.getElementById('27e6a12d-208b-438a-8c49-c8368fa75869').textContent;
-               // var render_items = [{"docid":"21fe5109-6193-4d41-8c7f-dafb2a42a81b","roots":{"62bfcc43-5f2d-49c9-bc26-f95d3f0c7272":"cfb06135-5f32-4d8c-a74e-a432fd178c4e"}}];
-                //root.Bokeh.embed.embed_items(docs_json, render_items);
-                
-                }
-                if (root.Bokeh !== undefined) {
-                    embed_document(root);
-                } else {
-                    var attempts = 0;
-                    var timer = setInterval(function(root) {
-                    if (root.Bokeh !== undefined) {
-                        embed_document(root);
-                        clearInterval(timer);
-                    }
-                    attempts++;
-                    if (attempts > 100) {
-                        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing")
-                        clearInterval(timer);
-                    }
-                    }, 10, root)
-                }
-                })(window);
-            });
+        (function () {
+            var fn = function () {
+                Bokeh.safely(function () {
+                    (function (root) {
+                        function embed_document(root) {
+
+                            // var docs_json = document.getElementById('27e6a12d-208b-438a-8c49-c8368fa75869').textContent;
+                            // var render_items = [{"docid":"21fe5109-6193-4d41-8c7f-dafb2a42a81b","roots":{"62bfcc43-5f2d-49c9-bc26-f95d3f0c7272":"cfb06135-5f32-4d8c-a74e-a432fd178c4e"}}];
+                            //root.Bokeh.embed.embed_items(docs_json, render_items);
+
+                        }
+                        if (root.Bokeh !== undefined) {
+                            embed_document(root);
+                        } else {
+                            var attempts = 0;
+                            var timer = setInterval(function (root) {
+                                if (root.Bokeh !== undefined) {
+                                    embed_document(root);
+                                    clearInterval(timer);
+                                }
+                                attempts++;
+                                if (attempts > 100) {
+                                    console.log(
+                                        "Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing"
+                                    )
+                                    clearInterval(timer);
+                                }
+                            }, 10, root)
+                        }
+                    })(window);
+                });
             };
             if (document.readyState != "loading") fn();
             else document.addEventListener("DOMContentLoaded", fn);
         })();
-        </script>
+    </script>
 
-        <!-- =============================================== -->
+    <!-- =============================================== -->
     <!-- <script src="/static/js/tawk-chat.js"></script> -->

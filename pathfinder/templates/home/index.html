@@ -2,27 +2,29 @@
 {% import "bootstrap/utils.html" as utils %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block content %}
-    {% include '/partials/topnav.html' %}
-    {% include '/partials/mobiletop.html' %}
-    {% include '/partials/navbar.html' %}
+{% include '/partials/topnav.html' %}
+{% include '/partials/mobiletop.html' %}
+{% if current_user.is_authenticated %}
+{% include '/partials/navbar.html' %}
+{% endif %}
 
-    <div class="container" style="height:80vh;">
-        <div class="row">
-        <div class="col-lg-8">
-            <div class="alert alert-warning">
-            <h4>Hello, You must have an account to login.For more information contact the Administrator</h4>
-             </div>
-        <div class="content-section">
-            <br/>
-            {{ utils.flashed_messages() }}
-            <br/>
-            <div class="center">
-              <h1>Login to your account</h1>
-              <hr/>
-              {{ wtf.quick_form(form) }}
-            </div>
-          </div>
-          </div>
-          </div>
+<div class="container" style="height:80vh;">
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="alert alert-warning" style="margin-top:20px;">
+        <h4>Hello, You must have an account to login.For more information contact the Administrator</h4>
+      </div>
+      <div class="content-section">
+        <br />
+        {{ utils.flashed_messages() }}
+        <br />
+        <div class="center">
+          <h1>Login to your account</h1>
+          <hr />
+          {{ wtf.quick_form(form) }}
+        </div>
+      </div>
     </div>
+  </div>
+</div>
 {% endblock %}

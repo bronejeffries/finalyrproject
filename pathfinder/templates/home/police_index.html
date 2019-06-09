@@ -13,40 +13,47 @@
         <br />
         {{ utils.flashed_messages() }}
         <br />
-        <div class="center">
-          <div class="row">
-            <div class="col-md-9">
-              <h1>Register the Police Station Here</h1>
-            </div>
-            <div class="col-md-3">
-              <a href="{{ url_for('home.register_user')}}" class="btn btn-secondary">Add a User</a>
+        <div class="panel" style="margin-top:30px;">
+          <div class="panel-body">
+            <div class="center">
+              <div class="row">
+                <div class="col-md-9">
+                  <h1>Register the Police Station Here</h1>
+                </div>
+                <div class="col-md-3">
+                  <a href="{{ url_for('home.register_user')}}" class="btn btn-success btn-sm">Add a User</a>
+                </div>
+              </div>
+
+              <hr />
+              {{ wtf.quick_form(form) }}
             </div>
           </div>
-
-          <hr />
-          {{ wtf.quick_form(form) }}
         </div>
       </div>
     </div>
   </div>
+  <div class="panel" style="margin-top:30px;">
+    <div class="panel-body">
+      <table class="table table-bordered" style="margin-top:100px;">
+        <th>#</th>
+        <th>Station Name</th>
+        <th>Division</th>
+        <th>Action</th>
 
-  <table class="table table-bordered" style="margin-top:100px;">
-    <th>#</th>
-    <th>Station Name</th>
-    <th>Division</th>
-    <th>Action</th>
-
-    <tbody>
-      {% for station in police_stations %}
-      <tr>
-        <td>{{ station.id }}</td>
-        <td>{{ station.StationName }}</td>
-        <td>{{ station.division }}</td>
-        <td><a href="{{ url_for('home.edit_police', id=station.id) }}">Edit</a>|<a
-            href="{{ url_for('home.delete_police', id=station.id) }}">Delete</a></td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+        <tbody>
+          {% for station in police_stations %}
+          <tr>
+            <td>{{ station.id }}</td>
+            <td>{{ station.StationName }}</td>
+            <td>{{ station.division }}</td>
+            <td><a href="{{ url_for('home.edit_police', id=station.id) }}">Edit</a>|<a
+                href="{{ url_for('home.delete_police', id=station.id) }}">Delete</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 {% endblock %}

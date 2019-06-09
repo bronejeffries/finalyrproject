@@ -2,28 +2,29 @@
 {% import "bootstrap/utils.html" as utils %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block content %}
-    {% include '/partials/topnav.html' %}
-    {% include '/partials/mobiletop.html' %}
-    {% include '/partials/navbar.html' %}
+{% include '/partials/topnav.html' %}
+{% include '/partials/mobiletop.html' %}
+{% if current_user.is_authenticated %}
+{% include '/partials/navbar.html' %}
+{% endif %}
 
-    <div class="container" style="min-height:80vh;">
-        <div class="row">
-        <div class="col-lg-8">
-            <div class="alert alert-warning">
-            <h4>Hello, When you register a user, you must give them powers to execute tasks.
-              They will be given powers to add crimes by default.</h4>
-             </div>
-        <div class="content-section">
-            <br/>
-            {{ utils.flashed_messages() }}
-            <br/>
-            <div class="center">
-              <h1>Register the users to use the System.</h1>
-              <hr/>
-              {{ wtf.quick_form(form) }}
-            </div>
-          </div>
-          </div>
-          </div>
+<div class="container" style="min-height:80vh;">
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="alert alert-warning" style="margin-top:20px;">
+        <h4>Register Users to manage the system</h4>
+      </div>
+      <div class="content-section">
+        <br />
+        {{ utils.flashed_messages() }}
+        <br />
+        <div class="center">
+          <h1>Register the users to use the System.</h1>
+          <hr />
+          {{ wtf.quick_form(form) }}
+        </div>
+      </div>
     </div>
+  </div>
+</div>
 {% endblock %}

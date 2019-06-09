@@ -48,6 +48,7 @@
   <!-- style CSS
   ============================================ -->
   <link rel="stylesheet" href="/static/style.css">
+  <link href="{{ url_for('static', filename='css/errors.css') }}" rel="stylesheet">
   <!-- responsive CSS
   ============================================ -->
   <link rel="stylesheet" href="/static/css/responsive.css">
@@ -60,14 +61,39 @@
 
   <script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.13.0.min.js"></script>
   <script type="text/javascript">
-      Bokeh.set_log_level("info");
+    Bokeh.set_log_level("info");
   </script>
   <!-- chart js -->
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous">
+  </script>
 
-<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js'></script>
+  <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.0/css/bootstrap-datepicker.css"
+    rel="stylesheet" type="text/css" /> -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.0/js/bootstrap-datepicker.min.js">
+  </script> -->
+
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js'></script>
+
+  <!-- <script>
+    $(document).ready(function () {
+      $("#From_date").datepicker({
+        todayBtn: 1,
+        autoclose: true,
+      }).on('changeDate', function (selected) {
+        var minDate = new Date(selected.date.valueOf());
+        $('#To_date').datepicker('setStartDate', minDate);
+      });
+      $("#To_date").datepicker()
+        .on('changeDate', function (selected) {
+          var minDate = new Date(selected.date.valueOf());
+          $('#From_date').datepicker('setEndDate', minDate);
+        });
+    });
+  </script> -->
+
 </head>
