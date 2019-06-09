@@ -1,98 +1,105 @@
 {% extends 'layout.html' %}
 {% import "bootstrap/utils.html" as utils %}
 {% block content %}
-    {% include '/partials/topnav.html' %}
-    {% include '/partials/mobiletop.html' %}
-    {% include '/partials/navbar.html' %}
+{% include '/partials/topnav.html' %}
+{% include '/partials/mobiletop.html' %}
+{% include '/partials/navbar.html' %}
 
-    <div class="container" style="min-height:80vh;">
-        <div class="row">
-        <div class="col-lg-12">
-        <div class="content-section">
-            <br/>
-            {{ utils.flashed_messages() }}
-            <br/>
-            <div class="center">
-              <h2>Register Crime Scene</h2>
-              <hr/>
-              <form method="POST" action="/admin/add-crime">
+<div class="container" style="min-height:80vh;">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="content-section">
+        <br />
+        {{ utils.flashed_messages() }}
+        <br />
+        <div class="center">
+          <h2>Register Crime Scene</h2>
+          <hr />
+          <form method="POST" action="/admin/add-crime">
 
-                <div class="form-group">
-                    <label for="">Longitude</label>
-                    <input id="long" class="form-control" name = "longitude" type="text" placeholder="longitude will appear here">
-                </div>
-                <div class="form-group">
-                        <label for="">Latitude</label>
-                        <input id="lat" class="form-control" name="latitude" type="text" placeholder="latitude will appear here">
-                </div>
-                <div class="form-group">
-                        <label for="">Location of the scene</label>
-                        <input id="pac-input" name="location" class="form-control" type="text" placeholder="Search Box">
-                </div>
-                <div class="form-group">
-                        <label>Description of the crime</label>
-                        <input  class="form-control" name="description" type="text" placeholder="description">
-                </div>
-                <div class="form-group">
-                        <label for="">Crime Category</label>
-                        <select class="form-control" name="category">
-                        <option value="">Select the type of crime here</option>
-                        {% for category in categories %}
-                        <option value="{{category.id}}">{{ category.violet_type }}</option>
-                        {% endfor %}
-                        </select>
-                </div>
-                <div class="form-group">
-                    <label for="">Police Station</label>
-                    <select class="form-control" name="police">
-                    <option value="">Select the police station</option>
-                    {% for police in police_stations %}
-                    <option value="{{police.id}}">{{ police.StationName }}</option>
-                    {% endfor %}
-                    </select>
+            <div class="form-group">
+              <label for="">Longitude</label>
+              <input id="long" class="form-control" name="longitude" type="text"
+                placeholder="longitude will appear here">
             </div>
-                <button type="submit" class="btn btn-primary">Add Crime</button>
-            </form>
-            <div id="map"></div>
+            <div class="form-group">
+              <label for="">Latitude</label>
+              <input id="lat" class="form-control" name="latitude" type="text" placeholder="latitude will appear here">
             </div>
-          </div>
-          </div>
-          </div>
+            <div class="form-group">
+              <label for="">Location of the scene</label>
+              <input id="pac-input" name="location" class="form-control" type="text" placeholder="Search Box">
+            </div>
+            <div class="form-group">
+              <label for="">Date:</label>
+              <input name="date_posted" class="form-control" type="date">
+            </div>
+            <div class="form-group">
+              <label>Description of the crime</label>
+              <input class="form-control" name="description" type="text" placeholder="description">
+            </div>
+            <div class="form-group">
+              <label for="">Crime Category</label>
+              <select class="form-control" name="category">
+                <option value="">Select the type of crime here</option>
+                {% for category in categories %}
+                <option value="{{category.id}}">{{ category.violet_type }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="">Police Station</label>
+              <select class="form-control" name="police">
+                <option value="">Select the police station</option>
+                {% for police in police_stations %}
+                <option value="{{police.id}}">{{ police.StationName }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Crime</button>
+          </form>
+          <div id="map"></div>
+        </div>
+      </div>
     </div>
+  </div>
+</div>
 {% endblock %}
 {% block scripts %}
 <script>
+  function initAutocomplete() {
+    var map = new google.maps.Map(document.getElementById('map'), {
+      center: {
+        lat: -33.8688,
+        lng: 151.2195
+      },
+      zoom: 13,
+      mapTypeId: 'roadmap'
+    });
 
-        function initAutocomplete() {
-          var map = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: -33.8688, lng: 151.2195},
-            zoom: 13,
-            mapTypeId: 'roadmap'
-          });
-  
-          // Create the search box and link it to the UI element.
-          var input = document.getElementById('pac-input');
-          var searchBox = new google.maps.places.SearchBox(input);
-          map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-  
-          // Bias the SearchBox results towards current map's viewport.
-          map.addListener('bounds_changed', function() {
-            searchBox.setBounds(map.getBounds());
-          });
-  
-          // more details for that place.
-          searchBox.addListener('places_changed', function() {
-            var places = searchBox.getPlaces();
-              console.log(places[0].geometry.location.lat())
-              document.getElementById('long').value = places[0].geometry.location.lng();
-              document.getElementById('lat').value = places[0].geometry.location.lat()
-            if (places.length == 0) {
-              return;
-            }
-           });
-        }
-  
-      </script>
-      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAFCR-n7VxtftzPKR4gCje1T-cAxQXn7S8&libraries=places&callback=initAutocomplete"
-      async defer></script>
+    // Create the search box and link it to the UI element.
+    var input = document.getElementById('pac-input');
+    var searchBox = new google.maps.places.SearchBox(input);
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+    // Bias the SearchBox results towards current map's viewport.
+    map.addListener('bounds_changed', function () {
+      searchBox.setBounds(map.getBounds());
+    });
+
+    // more details for that place.
+    searchBox.addListener('places_changed', function () {
+      var places = searchBox.getPlaces();
+      console.log(places[0].geometry.location.lat())
+      document.getElementById('long').value = places[0].geometry.location.lng();
+      document.getElementById('lat').value = places[0].geometry.location.lat()
+      if (places.length == 0) {
+        return;
+      }
+    });
+  }
+</script>
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAFCR-n7VxtftzPKR4gCje1T-cAxQXn7S8&libraries=places&callback=initAutocomplete"
+  async defer></script>
 {% endblock %}

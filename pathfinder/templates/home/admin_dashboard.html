@@ -1,195 +1,153 @@
 {% extends 'layout.html' %}
 {% block content %}
 <script>
+    var endpoint = '/web/PathFinder/v1.0/data/to-day'
+    var endpoint_data = '/web/PathFinder/v1.0/data/'
+    var actual_data = []
+    var labels = []
+    var casesData = {}
+    var current_year = ""
+    var category_colors = []
 
-  var endpoint = '/web/PathFinder/v1.0/data/to-day'
-  var endpoint_data = '/web/PathFinder/v1.0/data/'
-  var actual_data = []
-  var labels = []
-  var casesData = {}
-  var current_year = ""
-  var category_colors =[]
+    // retrieve graph data
+    $.ajax({
+        method: "GET",
+        url: endpoint,
+        success: function (data) {
+            crimesdata = data.crimesdata
+            labels = crimesdata.labels
+            actual_data = crimesdata.data
+            current_year = crimesdata.year
+            category_colors = crimesdata.category_colors
+            year_holders = document.getElementsByClassName("current_year")
+            for (var i = 0; i < year_holders.length; i++) {
+                year_holders[i].innerHTML = current_year
+            }
+            for (var i = 0; i < labels.length; i++) {
+                div_spanHolder = document.createElement('div')
+                span_color_holder = document.createElement("span")
+                span_color_holder.innerHTML = "====="
+                span_color_holder.style.color = category_colors[i]
+                span_category_name = document.createElement('span')
+                span_category_name.innerHTML = labels[i]
+                document.getElementById("map_keys").appendChild(span_color_holder)
+                document.getElementById("map_keys").appendChild(span_category_name)
+            }
 
-// retrieve graph data
-  $.ajax({
-    method:"GET",
-    url: endpoint,
-    success: function (data) {
-      crimesdata = data.crimesdata
-      labels = crimesdata.labels
-      actual_data = crimesdata.data
-      current_year = crimesdata.year
-      category_colors = crimesdata.category_colors
-      year_holders = document.getElementsByClassName("current_year")
-      for(var i =0;i<year_holders.length;i++){
-          year_holders[i].innerHTML=current_year
-      }
-      for(var i = 0;i<labels.length;i++){
-      div_spanHolder = document.createElement('div')
-      span_color_holder = document.createElement("span")
-      span_color_holder.innerHTML = "====="
-      span_color_holder.style.color = category_colors[i]
-      span_category_name = document.createElement('span')
-      span_category_name.innerHTML = labels[i]
-      document.getElementById("map_keys").appendChild(span_color_holder)
-      document.getElementById("map_keys").appendChild(span_category_name)
-      }
+            setChart()
+        },
+        error: function (error) {
+            console.error(error);
+        }
+    })
 
-      setChart()
-    },
-    error:function(error) {
-      console.error(error);
-    }
-  })
-
-// retrieve cases data
-//$.ajax({
-  //method:"GET",
-  //url:endpoint_data,
-  //success: function (data) {
+    // retrieve cases data
+    //$.ajax({
+    //method:"GET",
+    //url:endpoint_data,
+    //success: function (data) {
     //casesData = data.casesData
     //setCasesData()
-  //},
-  //error:function(error){
+    //},
+    //error:function(error){
     //console.error(error);
-  //}
-//})
+    //}
+    //})
 
-  function setCasesData() {
-    $(document).ready(function(){
-      document.getElementById("murder").innerHTML = casesData.murder
-      document.getElementById("kidnap").innerHTML = casesData.kidnap
-      document.getElementById("robbery").innerHTML = casesData.robbery
-      document.getElementById("theft").innerHTML = casesData.thefty
-    })
-  }
+    function setCasesData() {
+        $(document).ready(function () {
+            document.getElementById("murder").innerHTML = casesData.murder
+            document.getElementById("kidnap").innerHTML = casesData.kidnap
+            document.getElementById("robbery").innerHTML = casesData.robbery
+            document.getElementById("theft").innerHTML = casesData.thefty
+        })
+    }
 
-  function setChart(){
-    $(document).ready(function(){
+    function setChart() {
+        $(document).ready(function () {
 
-      var ctx = document.getElementById("Daily_chart");
-      // var ctx2 = document.getElementById("myChart2");
-      var myChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-          labels: labels,
-          datasets: [{
-              label:'Crime Analysis',
-              data: actual_data,
-              backgroundColor: category_colors,
-              borderColor: category_colors,
-              borderWidth: 1
-          }]
-      },
-      options: {
-          scales: {
-              yAxes: [{
-                  ticks: {
-                      beginAtZero:true
-                  }
-              }]
-          }
-      }
-  });
+            var ctx = document.getElementById("Daily_chart");
+            // var ctx2 = document.getElementById("myChart2");
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Crime Analysis',
+                        data: actual_data,
+                        backgroundColor: category_colors,
+                        borderColor: category_colors,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
 
-    })
+        })
 
-}
+    }
 </script>
-    {% include '/partials/topnav.html' %}
-    {% include '/partials/mobiletop.html' %}
-    {% include '/partials/navbar.html' %}
-
-    <!-- Start Status area -->
-    <div class="notika-status-area">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                    <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30">
-                        <div class="website-traffic-ctn">
-                            <h2><span class="counter" id="murder"></span> cases</h2>
-                            <p>Murder</p>
+{% include '/partials/topnav.html' %}
+{% include '/partials/mobiletop.html' %}
+{% if current_user.is_authenticated %}
+{% include '/partials/navbar.html' %}
+{% endif %}
+<!-- End Status area-->
+<!-- Start Sale Statistic area-->
+<div class="sale-statistic-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="sale-statistic-inner notika-shadow mg-tb-30">
+                    <div class="curved-inner-pro">
+                        <div class="curved-ctn">
+                            <h2>Crime Statistics for this year (<span class="current_year"></span>)</h2>
+                            <p></p>
                         </div>
-                        <div class="sparkline-bar-stats1">9,4,8,6,5,6,4,8,3,5,9,5</div>
                     </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                    <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30">
-                        <div class="website-traffic-ctn">
-                            <h2><span class="counter" id="theft"></span> cases</h2>
-                            <p>Theft</p>
-                        </div>
-                        <div class="sparkline-bar-stats2">1,4,8,3,5,6,4,8,3,3,9,5</div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                    <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30 dk-res-mg-t-30">
-                        <div class="website-traffic-ctn">
-                            <h2><span class="counter" id="kidnap"></span> cases</h2>
-                            <p>Kidnap</p>
-                        </div>
-                        <div class="sparkline-bar-stats3">4,2,8,2,5,6,3,8,3,5,9,5</div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                    <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30 dk-res-mg-t-30">
-                        <div class="website-traffic-ctn">
-                            <h2><span class="counter" id="robbery"></span> cases</h2>
-                            <p>Robbery</p>
-                        </div>
-                        <div class="sparkline-bar-stats4">2,4,8,4,5,7,4,7,3,5,7,5</div>
-                    </div>
+                    <!-- <div id="Daily_chart" class="flot-chart-sts flot-chart"></div> -->
+                    <canvas id="Daily_chart" class="flot-chart-sts flot-chart" width="150" height="95"></canvas>
                 </div>
             </div>
         </div>
     </div>
-    <!-- End Status area-->
-    <!-- Start Sale Statistic area-->
-    <div class="sale-statistic-area">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <div class="sale-statistic-inner notika-shadow mg-tb-30">
-                        <div class="curved-inner-pro">
-                            <div class="curved-ctn">
-                                <h2>Crime Statistics for this year (<span class="current_year"></span>)</h2>
-                                <p></p>
-                            </div>
-                        </div>
-                        <!-- <div id="Daily_chart" class="flot-chart-sts flot-chart"></div> -->
-                        <canvas id="Daily_chart" class="flot-chart-sts flot-chart" width="150" height="95"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- End Sale Statistic area-->
+</div>
+<!-- End Sale Statistic area-->
 
-    <!-- Start Map Statistic area-->
-    <div class="sale-statistic-area">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="sale-statistic-inner notika-shadow mg-tb-30">
-                            <div class="curved-inner-pro">
-                                <div class="curved-ctn">
-                                    <h2>Map Crime Statistics for this year (<span class="current_year"></span>)</h2>
-                                    <p>
-                                    Map Key
-                                    <div id="map_keys">
-                                    </div>
-                                    </p>
+<!-- Start Map Statistic area-->
+<div class="sale-statistic-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="sale-statistic-inner notika-shadow mg-tb-30">
+                    <div class="curved-inner-pro">
+                        <div class="curved-ctn">
+                            <h2>Map Crime Statistics for this year (<span class="current_year"></span>)</h2>
+                            <h2> {{uncategorized}} crime scences have unknown location(s) </h2>
+                            <p>
+                                Map Key
+                                <div id="map_keys">
                                 </div>
-                            </div>
-                            <!-- show maps here -->
-                                {% include '/pages/gmap_plot.html' %}
-                            <!-- maps here -->
+                            </p>
                         </div>
                     </div>
+                    <!-- show maps here -->
+                    {% include '/pages/gmap_plot.html' %}
+                    <!-- maps here -->
                 </div>
             </div>
         </div>
-        <!-- End Map Statistic area-->
+    </div>
+</div>
+<!-- End Map Statistic area-->
 
 
 {% endblock %}

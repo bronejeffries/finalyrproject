@@ -38,10 +38,10 @@ def check_category_by_color(color):
 
 
 @crimes.route('/admin/crime-category', methods=['POST', 'GET'])
-# @login_required
+@login_required
 def crimeCategory():
-    # if not current_user.is_admin:
-    #     abort(403)
+    if not current_user.is_admin:
+        abort(403)
     form = CrimeCategory()
     if form.validate_on_submit():
         """
@@ -64,9 +64,20 @@ def crimeCategory():
                            form=form)
 
 
+@crimes.route('/admin/category-view/', methods=['GET'])
+def categories_items():
+    if not current_user.is_admin:
+        abort(403)
+    categories = [
+        category.violet_type for category in Category.query.all()]
+    return jsonify({'categories': categories})
+
+
 @crimes.route('/admin/crime-category/edit/<int:id>', methods=['POST', 'GET'])
 @login_required
 def edit_crime(id):
+    if not current_user.is_admin:
+        abort(403)
     add_crime = False
     crime = Category.query.get_or_404(id)
     form = CrimeCategory(obj=crime)
@@ -87,6 +98,8 @@ def edit_crime(id):
 @crimes.route('/admin/crime-category/delete/<int:id>', methods=['GET', 'POST'])
 @login_required
 def delete_crime(id):
+    if not current_user.is_admin:
+        abort(403)
     crime = Category.query.get_or_404(id)
     db.session.delete(crime)
     db.session.commit()
@@ -97,16 +110,15 @@ def delete_crime(id):
 
 
 @crimes.route('/admin/add-crime', methods=['POST', 'GET'])
-# @login_required
+@login_required
 def addCrime():
-    # if not current_user.is_admin:
-    #     abort(403)
     if request.form:
         # print(request.form)
         crime = CrimeScene(longitude=request.form.get("longitude"),
                            latitude=request.form.get('latitude'),
                            description=request.form.get('description'),
                            location=request.form.get('location'),
+                           date_posted=request.form.get('date_posted'),
                            category_id=request.form.get('category'),
                            user_id=current_user.id,
                            police_id=request.form.get('police')
@@ -128,15 +140,19 @@ def allowed_file(filename):
 
 
 @crimes.route('/admin/add_crime_excel', methods=['GET'])
-# @login_required
+@login_required
 def add_excel_file():
+    if not current_user.is_admin:
+        abort(403)
     return render_template('crimes/add_crime_excel.html',
                            title="Add Excel Data")
 
 
 @crimes.route('/admin/store_excel_data', methods=['POST', 'GET'])
-# @login_required
+@login_required
 def store_excel_data():
+    if not current_user.is_admin:
+        abort(403)
     total_crimes = []
     if request.method == 'POST':
         files = request.get_array(field_name="crimes_excel")
@@ -182,7 +198,7 @@ def store_excel_data():
 
 
 @crimes.route('/admin/view_crimes')
-# @login_required
+@login_required
 def view_crimes():
     allcrimes = CrimeScene.query.all()
     return render_template('crimes/view_crimes.html',

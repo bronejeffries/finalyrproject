@@ -13,32 +13,40 @@
         <br />
         {{ utils.flashed_messages() }}
         <br />
-        <div class="center">
-          <h1>Register Crime Category eg "Theft"</h1>
-          <hr />
-          {{ wtf.quick_form(form) }}
+        <div class="panel" style="margin-top:30px;">
+          <div class="panel-body">
+            <div class="center">
+              <h1>Register Crime Category eg "Theft"</h1>
+              <hr />
+              {{ wtf.quick_form(form) }}
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <table class="table table-bordered" style="margin-top:100px;">
-    <th>#</th>
-    <th>Category Name</th>
-    <th>Number of Crimes</th>
-    <th>Action</th>
+  <div class="panel" style="margin-top:30px;">
+    <div class="panel-body">
+      <table class="table table-bordered" style="margin-top:100px;">
+        <th>#</th>
+        <th>Category Name</th>
+        <th>Number of Crimes</th>
+        <th>Action</th>
 
-    <tbody>
-      {% for category in categories %}
-      <tr>
-        <td>{{ category.id }}</td>
-        <td>{{ category.violet_type }}</td>
-        <td>67</td>
-        <td><a href="{{ url_for('crimes.edit_crime', id=category.id)}}">Edit</a>|<a
-            href="{{ url_for('crimes.delete_crime', id=category.id)}}">Delete</a></td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+        <tbody>
+          {% for category in categories %}
+          <tr>
+            <td>{{ category.id }}</td>
+            <td>{{ category.violet_type }}</td>
+            <td>{{ category.crimescene.count()}}</td>
+            <td><a href="{{ url_for('crimes.edit_crime', id=category.id)}}">Edit</a>|<a
+                href="{{ url_for('crimes.delete_crime', id=category.id)}}">Delete</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 {% endblock %}

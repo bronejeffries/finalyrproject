@@ -13,6 +13,18 @@ import os
 from datetime import datetime as dt
 
 
+def remove_blank(elem):
+    if elem is not '':
+        return True
+    else:
+        return False
+
+
+def clean_co_ordinates(list_obj):
+    clean_list = filter(remove_blank, list_obj)
+    return [item for item in clean_list]
+
+
 def get_co_ordinates(crimescenes):
     crimes_scenes = []
     if crimescenes is not None:
@@ -24,10 +36,12 @@ def get_co_ordinates(crimescenes):
         for crime_scene in CrimeScene.query.all():
             if dt.strftime(crime_scene.date_posted, year_mask) == year:
                 crimes_scenes.append(crime_scene)
-    longitudes = [crimescene.longitude for crimescene in crimes_scenes]
-    latitudes = [crimescene.latitude for crimescene in crimes_scenes]
+    longitudes = clean_co_ordinates(
+        [crimescene.longitude for crimescene in crimes_scenes])
+    latitudes = clean_co_ordinates(
+        [crimescene.latitude for crimescene in crimes_scenes])
     colors = [crimescene.scene.category_color for crimescene in crimes_scenes]
-    return latitudes, longitudes, colors
+    return latitudes, longitudes, colors, len(crimes_scenes)-len(latitudes)
 
 
 def showmap(output_name=None, crimescenes=None):
@@ -38,7 +52,8 @@ def showmap(output_name=None, crimescenes=None):
     GOOGLE_API_KEY = "AIzaSyAFCR-n7VxtftzPKR4gCje1T-cAxQXn7S8"
     plot = gmap(GOOGLE_API_KEY, map_options, tools=tools,
                 title="Crimes visualizing center", height=700, width=1100)
-    latitude_list, longitude_list, colors_list = get_co_ordinates(crimescenes)
+    latitude_list, longitude_list, colors_list, uncategorized_count = get_co_ordinates(
+        crimescenes)
     source = ColumnDataSource(
         data=dict(
             lat=latitude_list,
@@ -54,3 +69,4 @@ def showmap(output_name=None, crimescenes=None):
     output_file(map_path)
     print("saved...")
     save(plot)
+    return uncategorized_count
