@@ -42,19 +42,18 @@
     }
   })
 
-
 // retrieve cases data
-$.ajax({
-  method:"GET",
-  url:endpoint_data,
-  success: function (data) {
-    casesData = data.casesData
-    setCasesData()
-  },
-  error:function(error){
-    console.error(error);
-  }
-})
+//$.ajax({
+  //method:"GET",
+  //url:endpoint_data,
+  //success: function (data) {
+    //casesData = data.casesData
+    //setCasesData()
+  //},
+  //error:function(error){
+    //console.error(error);
+  //}
+//})
 
   function setCasesData() {
     $(document).ready(function(){
@@ -75,6 +74,7 @@ $.ajax({
       data: {
           labels: labels,
           datasets: [{
+              label:'Crime Analysis',
               data: actual_data,
               backgroundColor: category_colors,
               borderColor: category_colors,
